@@ -1,0 +1,6 @@
+Symbol Table for SUM
+	Symbol 	Address	Type
+	FIRST  	000000 	Relative
+	LOOP   	000006 	Relative
+	ZERO   	00000F 	Relative
+
