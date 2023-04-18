@@ -1,11 +1,63 @@
-Control Section SUM
-	Address Label	Mnemonic	Operand
-	000000	SUM  	START   	0      
-	000000	FIRST	LDA     	ZERO   
-	000003	     	LDX     	#1     
-	000006	LOOP 	ADDR    	X,A    
-	000008	     	RSUB    	       
-	000008	     	ORG     	15     
-	00000F	ZERO 	WORD    	0      
-	00000F	     	END     	FIRST  
+Control Section COPY
+	Address Label 	Mnemonic	Operand             
+	000000	COPY  	START   	0                   
+	000000	      	EXTDEF  	BUFFER,BUFEND,LENGTH
+	000000	      	EXTREF  	RDREC,WRREC         
+	000000	FIRST 	STL     	RETADR              
+	000003	CLOOP 	+JSUB   	RDREC               
+	000007	      	LDA     	LENGTH              
+	00000A	      	COMP    	#0                  
+	00000D	      	JEQ     	ENDFIL              
+	000010	      	+JSUB   	WRREC               
+	000014	      	J       	CLOOP               
+	000017	ENDFIL	LDA     	=C'EOF'             
+	00001A	      	STA     	BUFFER              
+	00001D	      	LDA     	#3                  
+	000020	      	STA     	LENGTH              
+	000023	      	+JSUB   	WRREC               
+	000027	      	J       	@RETADR             
+	00002A	RETADR	RESW    	1                   
+	00002D	LENGTH	RESW    	1                   
+	00002D	      	LTORG   	                    
+	000030	*     	=C'EOF' 	                    
+	000033	BUFFER	RESB    	4096                
+	000033	BUFEND	EQU     	*                   
+	000033	MAXLEN	EQU     	BUFEND-BUFFER       
+	000033	RDREC 	CSECT   	                    
+
+Control Section RDREC
+	Address Label 	Mnemonic	Operand             
+	000000	      	EXTREF  	BUFFER,LENGTH,BUFEND
+	000000	      	CLEAR   	X                   
+	000002	      	CLEAR   	A                   
+	000004	      	CLEAR   	S                   
+	000006	      	LDT     	MAXLEN              
+	000009	RLOOP 	TD      	INPUT               
+	00000C	      	JEQ     	RLOOP               
+	00000F	      	RD      	INPUT               
+	000012	      	COMPR   	A,S                 
+	000014	      	JEQ     	EXIT                
+	000017	      	+STCH   	BUFFER,X            
+	00001B	      	TIXR    	T                   
+	00001D	      	JLT     	RLOOP               
+	000020	EXIT  	+STX    	LENGTH              
+	000024	      	RSUB    	                    
+	000027	INPUT 	BYTE    	X'F1'               
+	000028	MAXLEN	WORD    	BUFEND-BUFFER       
+	000028	WRREC 	CSECT   	                    
+
+Control Section WRREC
+	Address Label	Mnemonic	Operand      
+	000000	     	EXTREF  	LENGTH,BUFFER
+	000000	     	CLEAR   	X            
+	000002	     	+LDT    	LENGTH       
+	000006	WLOOP	TD      	=X'05'       
+	000009	     	JEQ     	WLOOP        
+	00000C	     	+LDCH   	BUFFER,X     
+	000010	     	WD      	=X'05'       
+	000013	     	TIXR    	T            
+	000015	     	JLT     	WLOOP        
+	000018	     	RSUB    	             
+	00001B	*    	=X'05'  	             
+	000018	     	END     	FIRST        
 

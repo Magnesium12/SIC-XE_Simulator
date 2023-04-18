@@ -1,6 +1,22 @@
-Symbol Table for SUM
+Symbol Table for COPY
 	Symbol 	Address	Type
+	BUFEND 	001033 	Relative
+	BUFFER 	000033 	Relative
+	CLOOP  	000003 	Relative
+	ENDFIL 	000017 	Relative
 	FIRST  	000000 	Relative
-	LOOP   	000006 	Relative
-	ZERO   	00000F 	Relative
+	LENGTH 	00002D 	Relative
+	MAXLEN 	001000 	Absolute
+	RETADR 	00002A 	Relative
+
+Symbol Table for RDREC
+	Symbol 	Address	Type
+	EXIT   	000020 	Relative
+	INPUT  	000027 	Relative
+	MAXLEN 	000028 	Relative
+	RLOOP  	000009 	Relative
+
+Symbol Table for WRREC
+	Symbol 	Address	Type
+	WLOOP  	000006 	Relative
 
